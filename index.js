@@ -19,9 +19,9 @@ app.post('/insert', async (req, res) => {
     )
     res.status(200).json({ message: 'Inserted successfully' })
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Failed to insert' })
-  }
+  console.error('❌ INSERT ERROR:', err.message)
+  res.status(500).json({ error: err.message }) // sends actual error back
+}
 })
 
 const PORT = process.env.PORT || 3000
