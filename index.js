@@ -14,7 +14,7 @@ app.post('/insert', async (req, res) => {
   const { date, description, category, amount, currency, type } = req.body
   try {
     await pool.query(
-      'INSERT INTO your_table_name (date, description, category, amount, currency, type) VALUES ($1, $2, $3, $4, $5, $6)',
+      'INSERT INTO transactions (date, description, category, amount, currency, type) VALUES ($1, $2, $3, $4, $5, $6)',
       [date, description, category, amount, currency, type]
     )
     res.status(200).json({ message: 'Inserted successfully' })
