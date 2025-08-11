@@ -1,6 +1,5 @@
 import express from 'express'
 import dotenv from 'dotenv'
-import cors from 'cors'
 import pkg from 'pg'
 
 const { Pool } = pkg
@@ -8,20 +7,20 @@ dotenv.config()
 
 const app = express()
 
-// Enable JSON body parsing
+// Parse JSON
 app.use(express.json())
 
-// Enable CORS, including Origin:null for file:// requests
-app.use(
-  cors({
-    origin: true, // reflect the Origin header
-    methods: ['POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-  })
-)
-
-// Explicitly handle preflight for /insert
-app.options('/insert', (req, res) => res.sendStatus(204))
+// --- Minimal CORS without external dependency ---
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*') // allows file:// (Origin: null) and any site
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+  res.header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204) // preflight OK
+  }
+  next()
+})
+// ------------------------------------------------
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL })
 
